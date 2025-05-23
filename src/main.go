@@ -16,17 +16,5 @@ func main() {
 	p := createParser(ts)
 	program := p.parseProgram()
 
-	// println("TOKENS:")
-	// for _, t := range ts {
-	// 	fmt.Println(t)
-	// }
-	// println()
-
-	// println("INSTRS:")
-	// for _, instr := range program.instrs {
-	// 	fmt.Println(instr)
-	// }
-	// println()
-
-	program.emit()
+	emitProgram(&program)
 }
