@@ -16,26 +16,34 @@ const (
 	TokenKindIf
 	TokenKindThen
 	TokenKindEqual
+	TokenKindDoubleEqual
 	TokenKindPlus
+	TokenKindMinus
+	TokenKindMul
 	TokenKindLessThan
+	TokenKindLessThanEqual
 	TokenKindInvalid
 	TokenKindEnd
 )
 
 var tokenKindName = map[TokenKind]string{
-	TokenKindIdent:    "ident",
-	TokenKindLabel:    "label",
-	TokenKindInt:      "int",
-	TokenKindInput:    "input",
-	TokenKindOutput:   "output",
-	TokenKindGoto:     "goto",
-	TokenKindIf:       "if",
-	TokenKindThen:     "then",
-	TokenKindEqual:    "equal",
-	TokenKindPlus:     "plus",
-	TokenKindLessThan: "lessthan",
-	TokenKindInvalid:  "invalid",
-	TokenKindEnd:      "end",
+	TokenKindIdent:         "ident",
+	TokenKindLabel:         "label",
+	TokenKindInt:           "int",
+	TokenKindInput:         "input",
+	TokenKindOutput:        "output",
+	TokenKindGoto:          "goto",
+	TokenKindIf:            "if",
+	TokenKindThen:          "then",
+	TokenKindEqual:         "equal",
+	TokenKindDoubleEqual:   "doubleequal",
+	TokenKindPlus:          "plus",
+	TokenKindMinus:         "minus",
+	TokenKindMul:           "mul",
+	TokenKindLessThan:      "lessthan",
+	TokenKindLessThanEqual: "lessthanequal",
+	TokenKindInvalid:       "invalid",
+	TokenKindEnd:           "end",
 }
 
 func (kind TokenKind) String() string {
@@ -87,13 +95,25 @@ func (l *Lexer) nextToken() Token {
 		l.read()
 		return Token{kind: TokenKindEnd}
 	case l.ch == '=':
-		l.read()
+		if l.read() == '=' {
+			l.read()
+			return Token{kind: TokenKindDoubleEqual}
+		}
 		return Token{kind: TokenKindEqual}
 	case l.ch == '+':
 		l.read()
 		return Token{kind: TokenKindPlus}
-	case l.ch == '<':
+	case l.ch == '-':
 		l.read()
+		return Token{kind: TokenKindMinus}
+	case l.ch == '*':
+		l.read()
+		return Token{kind: TokenKindMul}
+	case l.ch == '<':
+		if l.read() == '=' {
+			l.read()
+			return Token{kind: TokenKindLessThanEqual}
+		}
 		return Token{kind: TokenKindLessThan}
 	case l.ch == ':':
 		l.read()

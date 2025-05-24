@@ -108,6 +108,22 @@ func emitRel(rel NodeRel, scope *Scope) {
 		fmt.Printf("    setl al\n")
 		fmt.Printf("    and al, 1\n")
 		fmt.Printf("    movzx rax, al\n")
+	case NodeRelLessThanEqual:
+		emitTerm(rel.lhs, scope)
+		fmt.Printf("    mov r12, rax\n")
+		emitTerm(rel.rhs, scope)
+		fmt.Printf("    cmp r12, rax\n")
+		fmt.Printf("    setle al\n")
+		fmt.Printf("    and al, 1\n")
+		fmt.Printf("    movzx rax, al\n")
+	case NodeRelEqual:
+		emitTerm(rel.lhs, scope)
+		fmt.Printf("    mov r12, rax\n")
+		emitTerm(rel.rhs, scope)
+		fmt.Printf("    cmp r12, rax\n")
+		fmt.Printf("    sete al\n")
+		fmt.Printf("    and al, 1\n")
+		fmt.Printf("    movzx rax, al\n")
 	}
 }
 
@@ -119,7 +135,20 @@ func emitExpr(expr NodeExpr, scope *Scope) {
 		emitTerm(expr.lhs, scope)
 		fmt.Printf("    mov r12, rax\n")
 		emitTerm(expr.rhs, scope)
-		fmt.Printf("    add rax, r12\n")
+		fmt.Printf("    add r12, rax\n")
+		fmt.Printf("    mov rax, r12\n")
+	case NodeExprMinus:
+		emitTerm(expr.lhs, scope)
+		fmt.Printf("    mov r12, rax\n")
+		emitTerm(expr.rhs, scope)
+		fmt.Printf("    sub r12, rax\n")
+		fmt.Printf("    mov rax, r12\n")
+	case NodeExprMul:
+		emitTerm(expr.lhs, scope)
+		fmt.Printf("    mov r12, rax\n")
+		emitTerm(expr.rhs, scope)
+		fmt.Printf("    imul r12, rax\n")
+		fmt.Printf("    mov rax, r12\n")
 	}
 }
 
@@ -165,6 +194,12 @@ func scopeRel(rel NodeRel, scope *Scope) {
 	case NodeRelLessThan:
 		scopeTerm(rel.lhs, scope)
 		scopeTerm(rel.rhs, scope)
+	case NodeRelLessThanEqual:
+		scopeTerm(rel.lhs, scope)
+		scopeTerm(rel.rhs, scope)
+	case NodeRelEqual:
+		scopeTerm(rel.lhs, scope)
+		scopeTerm(rel.rhs, scope)
 	}
 }
 
@@ -173,6 +208,12 @@ func scopeExpr(expr NodeExpr, scope *Scope) {
 	case NodeExprSingle:
 		scopeTerm(expr.term, scope)
 	case NodeExprPlus:
+		scopeTerm(expr.lhs, scope)
+		scopeTerm(expr.rhs, scope)
+	case NodeExprMinus:
+		scopeTerm(expr.lhs, scope)
+		scopeTerm(expr.rhs, scope)
+	case NodeExprMul:
 		scopeTerm(expr.lhs, scope)
 		scopeTerm(expr.rhs, scope)
 	}

@@ -1,0 +1,12 @@
+num = input
+a = 0
+b = 1
+:loop
+if num == 0 then goto :end
+temp = b
+b = b + a
+a = temp
+num = num - 1
+goto :loop
+:end
+output a

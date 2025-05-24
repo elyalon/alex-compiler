@@ -56,15 +56,25 @@ type NodeExprTermBinop struct {
 }
 type NodeExprSingle struct{ term NodeTerm }
 type NodeExprPlus NodeExprTermBinop
+type NodeExprMinus NodeExprTermBinop
+type NodeExprMul NodeExprTermBinop
 
 func (NodeExprSingle) nodeExpr() {}
 func (NodeExprPlus) nodeExpr()   {}
+func (NodeExprMinus) nodeExpr()  {}
+func (NodeExprMul) nodeExpr()    {}
 
 func (expr NodeExprSingle) String() string {
 	return "expr(single(" + expr.term.String() + "))"
 }
 func (expr NodeExprPlus) String() string {
 	return "expr(plus(" + expr.lhs.String() + " + " + expr.rhs.String() + "))"
+}
+func (expr NodeExprMinus) String() string {
+	return "expr(minus(" + expr.lhs.String() + " - " + expr.rhs.String() + "))"
+}
+func (expr NodeExprMul) String() string {
+	return "expr(mul(" + expr.lhs.String() + " * " + expr.rhs.String() + "))"
 }
 
 // Rel
@@ -79,11 +89,20 @@ type NodeRelTermBinop struct {
 	rhs NodeTerm
 }
 type NodeRelLessThan NodeRelTermBinop
+type NodeRelLessThanEqual NodeRelTermBinop
+type NodeRelEqual NodeRelTermBinop
 
 func (NodeRelLessThan) nodeRel() {}
-
 func (rel NodeRelLessThan) String() string {
 	return "rel(" + rel.lhs.String() + " < " + rel.rhs.String() + ")"
+}
+func (NodeRelLessThanEqual) nodeRel() {}
+func (rel NodeRelLessThanEqual) String() string {
+	return "rel(" + rel.lhs.String() + " <= " + rel.rhs.String() + ")"
+}
+func (NodeRelEqual) nodeRel() {}
+func (rel NodeRelEqual) String() string {
+	return "rel(" + rel.lhs.String() + " == " + rel.rhs.String() + ")"
 }
 
 // Term
@@ -258,12 +277,21 @@ func (p *Parser) parseRel() NodeRel {
 
 	var t Token
 	p.current(&t)
-	if t.kind == TokenKindLessThan {
+	switch {
+	case t.kind == TokenKindLessThan:
 		p.advance()
 		rhs = p.parseTerm()
 		rel = NodeRelLessThan{lhs: lhs, rhs: rhs}
-	} else {
-		panic(fmt.Errorf("expected rel token (lessthan), found: %v", t.kind))
+	case t.kind == TokenKindLessThanEqual:
+		p.advance()
+		rhs = p.parseTerm()
+		rel = NodeRelLessThanEqual{lhs: lhs, rhs: rhs}
+	case t.kind == TokenKindDoubleEqual:
+		p.advance()
+		rhs = p.parseTerm()
+		rel = NodeRelEqual{lhs: lhs, rhs: rhs}
+	default:
+		panic(fmt.Errorf("expected rel token (lessthan, lessthanequal, doubleequal), found: %v", t.kind))
 	}
 
 	return rel
@@ -299,12 +327,20 @@ func (p *Parser) parseExpr() NodeExpr {
 
 	var t Token
 	p.current(&t)
-	if t.kind == TokenKindPlus {
+	switch {
+	case t.kind == TokenKindPlus:
 		p.advance()
 		rhs = p.parseTerm()
-
 		expr = NodeExprPlus{lhs: lhs, rhs: rhs}
-	} else {
+	case t.kind == TokenKindMinus:
+		p.advance()
+		rhs = p.parseTerm()
+		expr = NodeExprMinus{lhs: lhs, rhs: rhs}
+	case t.kind == TokenKindMul:
+		p.advance()
+		rhs = p.parseTerm()
+		expr = NodeExprMul{lhs: lhs, rhs: rhs}
+	default:
 		expr = NodeExprSingle{lhs}
 	}
 
