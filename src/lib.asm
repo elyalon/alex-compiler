@@ -48,44 +48,26 @@ write_uint:
     inc rsp
     ret
 
-;; Compute the length of a NULL-terminated string
-;;   rdi - const char *s
-strlen:
-    push rdi
-    xor rax, rax
-.next_char:
-    mov al, byte [rdi]
-    cmp rax, 0
-    je .done
-
-    inc rdi
-    jmp .next_char
-.done:
-    pop rsi
-    sub rdi, rsi
-    mov rax, rdi
-    ret
-
 ;; Parse unsigned integer from a sized string
 ;;   rdi - void *buf
 ;;   rsi - size_t n
 parse_uint:
     xor rax, rax
-    xor rbx, rbx
-    mov rcx, 10
+    xor rcx, rcx
+    mov rdx, 10
 .next_digit:
     cmp rsi, 0
     jle .done
 
-    mov bl, byte [rdi]
-    cmp rbx, '0'
+    mov cl, byte [rdi]
+    cmp rcx, '0'
     jl .done
-    cmp rbx, '9'
+    cmp rcx, '9'
     jg .done
-    sub rbx, '0'
+    sub rcx, '0'
 
-    mul rcx
-    add rax, rbx
+    mul rdx
+    add rax, rcx
 
     inc rdi
     dec rsi

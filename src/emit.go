@@ -102,25 +102,25 @@ func emitRel(rel NodeRel, scope *Scope) {
 	switch rel := rel.(type) {
 	case NodeRelLessThan:
 		emitTerm(rel.lhs, scope)
-		fmt.Printf("    mov r12, rax\n")
+		fmt.Printf("    mov rbx, rax\n")
 		emitTerm(rel.rhs, scope)
-		fmt.Printf("    cmp r12, rax\n")
+		fmt.Printf("    cmp rbx, rax\n")
 		fmt.Printf("    setl al\n")
 		fmt.Printf("    and al, 1\n")
 		fmt.Printf("    movzx rax, al\n")
 	case NodeRelLessThanEqual:
 		emitTerm(rel.lhs, scope)
-		fmt.Printf("    mov r12, rax\n")
+		fmt.Printf("    mov rbx, rax\n")
 		emitTerm(rel.rhs, scope)
-		fmt.Printf("    cmp r12, rax\n")
+		fmt.Printf("    cmp rbx, rax\n")
 		fmt.Printf("    setle al\n")
 		fmt.Printf("    and al, 1\n")
 		fmt.Printf("    movzx rax, al\n")
 	case NodeRelEqual:
 		emitTerm(rel.lhs, scope)
-		fmt.Printf("    mov r12, rax\n")
+		fmt.Printf("    mov rbx, rax\n")
 		emitTerm(rel.rhs, scope)
-		fmt.Printf("    cmp r12, rax\n")
+		fmt.Printf("    cmp rbx, rax\n")
 		fmt.Printf("    sete al\n")
 		fmt.Printf("    and al, 1\n")
 		fmt.Printf("    movzx rax, al\n")
@@ -133,22 +133,22 @@ func emitExpr(expr NodeExpr, scope *Scope) {
 		emitTerm(expr.term, scope)
 	case NodeExprPlus:
 		emitTerm(expr.lhs, scope)
-		fmt.Printf("    mov r12, rax\n")
+		fmt.Printf("    mov rbx, rax\n")
 		emitTerm(expr.rhs, scope)
-		fmt.Printf("    add r12, rax\n")
-		fmt.Printf("    mov rax, r12\n")
+		fmt.Printf("    add rbx, rax\n")
+		fmt.Printf("    mov rax, rbx\n")
 	case NodeExprMinus:
 		emitTerm(expr.lhs, scope)
-		fmt.Printf("    mov r12, rax\n")
+		fmt.Printf("    mov rbx, rax\n")
 		emitTerm(expr.rhs, scope)
-		fmt.Printf("    sub r12, rax\n")
-		fmt.Printf("    mov rax, r12\n")
+		fmt.Printf("    sub rbx, rax\n")
+		fmt.Printf("    mov rax, rbx\n")
 	case NodeExprMul:
 		emitTerm(expr.lhs, scope)
-		fmt.Printf("    mov r12, rax\n")
+		fmt.Printf("    mov rbx, rax\n")
 		emitTerm(expr.rhs, scope)
-		fmt.Printf("    imul r12, rax\n")
-		fmt.Printf("    mov rax, r12\n")
+		fmt.Printf("    imul rbx, rax\n")
+		fmt.Printf("    mov rax, rbx\n")
 	}
 }
 
@@ -156,8 +156,6 @@ func emitTerm(term NodeTerm, scope *Scope) {
 	switch term := term.(type) {
 	case NodeTermInput:
 		fmt.Printf("    read 0, line, LINE_MAX\n")
-		fmt.Printf("    mov rdi, line\n")
-		fmt.Printf("    call strlen\n")
 		fmt.Printf("    mov rdi, line\n")
 		fmt.Printf("    mov rsi, rax\n")
 		fmt.Printf("    call parse_uint\n")
