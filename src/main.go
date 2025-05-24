@@ -7,7 +7,7 @@ import (
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Please provide a file name as argument")
+		fmt.Println("must provide file to compile as first argument")
 		return
 	}
 	buf, err := os.ReadFile(os.Args[1])
