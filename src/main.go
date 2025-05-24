@@ -6,7 +6,11 @@ import (
 )
 
 func main() {
-	buf, err := os.ReadFile("example.alex")
+	if len(os.Args) < 2 {
+		fmt.Println("Please provide a file name as argument")
+		return
+	}
+	buf, err := os.ReadFile(os.Args[1])
 	if err != nil {
 		fmt.Printf("error reading file: %v\n", err)
 		return
