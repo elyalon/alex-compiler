@@ -106,7 +106,6 @@ func emitRel(rel NodeRel, scope *Scope) {
 		emitTerm(rel.rhs, scope)
 		fmt.Printf("    cmp rbx, rax\n")
 		fmt.Printf("    setl al\n")
-		fmt.Printf("    and al, 1\n")
 		fmt.Printf("    movzx rax, al\n")
 	case NodeRelLessThanEqual:
 		emitTerm(rel.lhs, scope)
@@ -114,7 +113,6 @@ func emitRel(rel NodeRel, scope *Scope) {
 		emitTerm(rel.rhs, scope)
 		fmt.Printf("    cmp rbx, rax\n")
 		fmt.Printf("    setle al\n")
-		fmt.Printf("    and al, 1\n")
 		fmt.Printf("    movzx rax, al\n")
 	case NodeRelEqual:
 		emitTerm(rel.lhs, scope)
@@ -122,7 +120,6 @@ func emitRel(rel NodeRel, scope *Scope) {
 		emitTerm(rel.rhs, scope)
 		fmt.Printf("    cmp rbx, rax\n")
 		fmt.Printf("    sete al\n")
-		fmt.Printf("    and al, 1\n")
 		fmt.Printf("    movzx rax, al\n")
 	}
 }
